@@ -213,6 +213,8 @@ Resources:
     Type: AWS::EFS::FileSystem
     Properties:
       Encrypted: true
+      BackupPolicy:
+        Status: ENABLED
       FileSystemTags:
         - Key: Name
           Value: jenkins-home
