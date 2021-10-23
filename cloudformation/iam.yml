@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  JennkinsUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: jennkins-codebuild
+
+  JennkinsUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref JennkinsUser
