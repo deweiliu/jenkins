@@ -5,6 +5,22 @@ Resources:
     Type: AWS::IAM::User
     Properties:
       UserName: jennkins-codebuild
+      Policies:
+        - PolicyName: JenkinsUserPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*:*"
+                Action:
+                  - logs:GetLogEvents
+              - Effect: Allow
+                Resource:
+                  - !Sub "arn:aws:codebuild:${AWS::Region}:${AWS::AccountId}:project/*"
+                Action:
+                  - codebuild:StartBuild
+                  - codebuild:BatchGetBuilds
+                  - codebuild:BatchGetProjects
 
   JennkinsUserAccessKey:
     Type: AWS::IAM::AccessKey
