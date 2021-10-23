@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  JenkinsDockerImage:
+    Type: String
+    Default: jenkins/jenkins:latest
+    Description: Docker image used in the ECS task definition. Override the default to use a custom image (mandatory).
+Description:
+  Provision the required resources for blog post example 'Deploying Jenkins to ECS'.
+  Wait for creation to complete before testing.
+Resources:
+  CertificateStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/certificate.yml
+  ECSStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/ecs.yml
+      Parameters:
+        JenkinsDockerImage: !Ref JenkinsDockerImage
+        CertificateArn: !GetAtt CertificateStack.Outputs.CertificateARN
+  CNametack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/cname.yml
+      Parameters:
+        LoadBalancerDNSName: !GetAtt ECSStack.Outputs.LoadBalancerDNSName
+Outputs:
+  JenkinsLoadBalancerDNS:
+    Value: !GetAtt CNametack.Outputs.CName
