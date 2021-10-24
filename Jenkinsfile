@@ -5,7 +5,7 @@ pipeline {
         stage('Build Jenkins Image') {
             steps{
             dir('./jenkins-image'){
-                sh "docker-compose build"
+                sh "docker build . --tag deweiliu/jenkins:latest"
             }
             }
         }
@@ -20,7 +20,7 @@ pipeline {
                 )]) {
                 sh '''
                 docker login --username $USERNAME --password $PASSWORD
-                docker-compose push
+                docker push
                 docker logout
                 '''
   }
