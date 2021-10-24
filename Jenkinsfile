@@ -3,11 +3,15 @@ pipeline {
 
     stages {
         stage('Build Jenkins Image') {
+            steps{
             dir('./jenkins-image'){
                 sh "docker-compose build"
             }
+            }
         }
         stage('Publish Jenkins Image') {
+            steps{
+
             dir('./jenkins-image'){
                 withCredentials([usernamePassword(
                     credentialsId: 'docker',
@@ -20,6 +24,7 @@ pipeline {
                 docker logout
                 '''
   }
+            }
             }
         }        
     }
