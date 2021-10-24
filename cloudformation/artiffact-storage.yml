@@ -5,4 +5,3 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: dliu.com-build-artifacts
-
