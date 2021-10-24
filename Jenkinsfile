@@ -23,9 +23,15 @@ pipeline {
                 docker push
                 docker logout
                 '''
-  }
             }
             }
-        }        
+            }
+        }
+
+        stage('Upload CloudFormation Templates')        {
+            steps{
+                sh 'echo test'
+            }
+        }
     }
 }
