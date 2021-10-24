@@ -8,6 +8,10 @@ Description:
   Provision the required resources for blog post example 'Deploying Jenkins to ECS'.
   Wait for creation to complete before testing.
 Resources:
+  ArtifactStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/artiffact-storage.yml
   CertificateStack:
     Type: AWS::CloudFormation::Stack
     Properties:

@@ -1,0 +1,8 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  User:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: dliu.com-build-artifacts
+
