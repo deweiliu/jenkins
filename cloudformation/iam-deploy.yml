@@ -1,0 +1,18 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  User:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: jennkins-deploy
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCodePipelineCustomActionAccess
+
+  AccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref User
+
+Outputs:
+  JenkinsAccessSecret:
+    Value: !GetAtt AccessKey.SecretAccessKey

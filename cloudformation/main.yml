@@ -25,10 +25,15 @@ Resources:
       TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/cname.yml
       Parameters:
         LoadBalancerDNSName: !GetAtt ECSStack.Outputs.LoadBalancerDNSName
-  IAMtack:
+  IAMBuildtack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/iam.yml
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/iam-build.yml
+
+  IAMDeployStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/iam-deploy.yml
 
 Outputs:
   JenkinsLoadBalancerDNS:
