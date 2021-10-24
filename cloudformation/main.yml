@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: "2010-09-09"
 Parameters:
   JenkinsDockerImage:
     Type: String
-    Default: jenkins/jenkins:latest
+    Default: deweiliu/jenkins:latest
     Description: Docker image used in the ECS task definition. Override the default to use a custom image (mandatory).
 Description:
   Provision the required resources for blog post example 'Deploying Jenkins to ECS'.
