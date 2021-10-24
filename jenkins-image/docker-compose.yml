@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  best-friends:
+    image: deweiliu/jenkins:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
