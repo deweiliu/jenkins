@@ -38,6 +38,10 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/iam-deploy.yml
+  IAMEC2PluginStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/iam-ec2-plugin.yml
 
 Outputs:
   JenkinsLoadBalancerDNS:

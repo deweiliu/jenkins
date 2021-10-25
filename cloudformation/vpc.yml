@@ -58,39 +58,19 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub 'Private Subnet 1 - ${AWS::StackName}'
-  PrivateSubnet2:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref VPC
-      CidrBlock: 10.0.3.0/24
-      MapPublicIpOnLaunch: false
-      AvailabilityZone: !Select
-        - 1
-        - !GetAZs
-          Ref: 'AWS::Region'
-      Tags:
-        - Key: Name
-          Value: !Sub 'Private Subnet 2 - ${AWS::StackName}'
+
   NatGateway1EIP:
     Type: AWS::EC2::EIP
     DependsOn: AttachGateway
     Properties:
       Domain: vpc
-  NatGateway2EIP:
-    Type: AWS::EC2::EIP
-    DependsOn: AttachGateway
-    Properties:
-      Domain: vpc
+
   NatGateway1:
     Type: AWS::EC2::NatGateway
     Properties:
       AllocationId: !GetAtt NatGateway1EIP.AllocationId
       SubnetId: !Ref PublicSubnet1
-  NatGateway2:
-    Type: AWS::EC2::NatGateway
-    Properties:
-      AllocationId: !GetAtt NatGateway2EIP.AllocationId
-      SubnetId: !Ref PublicSubnet2
+
   PublicRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -110,11 +90,7 @@ Resources:
     Properties:
       SubnetId: !Ref PublicSubnet1
       RouteTableId: !Ref PublicRouteTable
-  PublicRouteTableSubnetAssociation2:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref PublicSubnet2
-      RouteTableId: !Ref PublicRouteTable
+
   PrivateRouteTable1:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -133,24 +109,8 @@ Resources:
     Properties:
       RouteTableId: !Ref PrivateRouteTable1
       SubnetId: !Ref PrivateSubnet1
-  PrivateRouteTable2:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref VPC
-      Tags:
-        - Key: Name
-          Value: !Sub 'Private Route Table 2 - ${AWS::StackName}'
-  DefaultPrivateRoute2:
-    Type: AWS::EC2::Route
-    Properties:
-      RouteTableId: !Ref PrivateRouteTable2
-      DestinationCidrBlock: 0.0.0.0/0
-      NatGatewayId: !Ref NatGateway2
-  PrivateSubnet2RouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      RouteTableId: !Ref PrivateRouteTable2
-      SubnetId: !Ref PrivateSubnet2
+
+
 Outputs:
   CIDRVPC:
     Value: !GetAtt VPC.CidrBlock
@@ -160,7 +120,5 @@ Outputs:
     Value: !Ref PublicSubnet2
   PrivateSubnet1:
     Value: !Ref PrivateSubnet1
-  PrivateSubnet2:
-    Value: !Ref PrivateSubnet2
   VPC:
     Value: !Ref VPC

@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: 2010-09-09
+# https://plugins.jenkins.io/ec2/
+Resources:
+  User:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: jenkins-ec2-plugin
+      Policies:
+        - PolicyName: JenkinsEC2PluginPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: Stmt1312295543082
+                Action:
+                  - ec2:DescribeSpotInstanceRequests
+                  - ec2:CancelSpotInstanceRequests
+                  - ec2:GetConsoleOutput
+                  - ec2:RequestSpotInstances
+                  - ec2:RunInstances
+                  - ec2:StartInstances
+                  - ec2:StopInstances
+                  - ec2:TerminateInstances
+                  - ec2:CreateTags
+                  - ec2:DeleteTags
+                  - ec2:DescribeInstances
+                  - ec2:DescribeKeyPairs
+                  - ec2:DescribeRegions
+                  - ec2:DescribeImages
+                  - ec2:DescribeAvailabilityZones
+                  - ec2:DescribeSecurityGroups
+                  - ec2:DescribeSubnets
+                  - iam:ListInstanceProfilesForRole
+                  - iam:PassRole
+                  - ec2:GetPasswordData
+                Effect: Allow
+                Resource: "*"
+
+  AccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref User
+
+Outputs:
+  AccessSecret:
+    Value: !GetAtt AccessKey.SecretAccessKey

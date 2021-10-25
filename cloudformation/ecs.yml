@@ -87,6 +87,9 @@ Resources:
       GroupName: JenkinsSecurityGroup
       GroupDescription: Security group for Jenkins
       VpcId: !GetAtt VPCStack.Outputs.VPC
+
+
+
   JenkinsLoadBalancerSecurityGroupIngress:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
@@ -192,7 +195,6 @@ Resources:
           AssignPublicIp: ENABLED
           Subnets:
             - !GetAtt VPCStack.Outputs.PrivateSubnet1
-            - !GetAtt VPCStack.Outputs.PrivateSubnet2
           SecurityGroups:
             - !GetAtt JenkinsSecurityGroup.GroupId
       LoadBalancers:
@@ -223,13 +225,6 @@ Resources:
     Properties:
       FileSystemId: !Ref FileSystemResource
       SubnetId: !GetAtt VPCStack.Outputs.PrivateSubnet1
-      SecurityGroups:
-        - !GetAtt EFSSecurityGroup.GroupId
-  MountTargetResource2:
-    Type: AWS::EFS::MountTarget
-    Properties:
-      FileSystemId: !Ref FileSystemResource
-      SubnetId: !GetAtt VPCStack.Outputs.PrivateSubnet2
       SecurityGroups:
         - !GetAtt EFSSecurityGroup.GroupId
   AccessPointResource:
