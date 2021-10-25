@@ -107,8 +107,6 @@ Resources:
 Outputs:
   VPC:
     Value: !Ref VPC
-  CIDRVPC:
-    Value: !GetAtt VPC.CidrBlock
   MasterSubnet1:
     Value: !Ref MasterSubnet1
   SlavesSubnet1:

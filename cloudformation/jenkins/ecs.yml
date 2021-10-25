@@ -1,14 +1,10 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Parameters:
-  CertificateArn:
-    Type: String
   JenkinsDockerImage:
     Type: String
   JenkinsFileSystem:
     Type: String
   VPC:
-    Type: String
-  CIDRVPC:
     Type: String
   MasterSubnet1:
     Type: String
@@ -23,6 +19,15 @@ Description:
   Provision the required resources for blog post example 'Deploying Jenkins to ECS'.
   Wait for creation to complete before testing.
 Resources:
+  SSL:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: jenkins.dliu.com
+      DomainValidationOptions:
+        - DomainName: jenkins.dliu.com
+          HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      ValidationMethod: DNS
+
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -71,7 +76,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       Certificates:
-        - CertificateArn: !Ref CertificateArn
+        - CertificateArn: !Ref SSL
       DefaultActions:
         - Type: forward
           ForwardConfig:
@@ -224,20 +229,20 @@ Resources:
           ToPort: 2049
           SourceSecurityGroupId: !Ref JenkinsSecurityGroup
 
-  # MountTargetResource1:
-  #   Type: AWS::EFS::MountTarget
-  #   Properties:
-  #     FileSystemId: !Ref JenkinsFileSystem
-  #     SubnetId: !Ref MasterSubnet1
-  #     SecurityGroups:
-  #       - !GetAtt EFSSecurityGroup.GroupId
-  # MountTargetResource2:
-  #   Type: AWS::EFS::MountTarget
-  #   Properties:
-  #     FileSystemId: !Ref JenkinsFileSystem
-  #     SubnetId: !Ref MasterSubnet2
-  #     SecurityGroups:
-  #       - !GetAtt EFSSecurityGroup.GroupId
+  MountTargetResource1:
+    Type: AWS::EFS::MountTarget
+    Properties:
+      FileSystemId: !Ref JenkinsFileSystem
+      SubnetId: !Ref MasterSubnet1
+      SecurityGroups:
+        - !GetAtt EFSSecurityGroup.GroupId
+  MountTargetResource2:
+    Type: AWS::EFS::MountTarget
+    Properties:
+      FileSystemId: !Ref JenkinsFileSystem
+      SubnetId: !Ref MasterSubnet2
+      SecurityGroups:
+        - !GetAtt EFSSecurityGroup.GroupId
   AccessPointResource:
     Type: AWS::EFS::AccessPoint
     Properties:
@@ -251,8 +256,19 @@ Resources:
           OwnerUid: "1000"
           Permissions: "755"
         Path: "/jenkins-home"
+
+  JenkinsCNameRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      Name: jenkins.dliu.com
+      Type: CNAME
+      TTL: "3600"
+      ResourceRecords:
+        - !GetAtt LoadBalancer.DNSName
+
 Outputs:
   Logs:
     Value: !Ref CloudwatchLogsGroup
-  LoadBalancerDNSName:
-    Value: !GetAtt LoadBalancer.DNSName
+  JenkinsCNameRecord:
+    Value: !Ref JenkinsCNameRecord

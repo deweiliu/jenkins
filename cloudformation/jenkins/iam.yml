@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
 # https://plugins.jenkins.io/ec2/
 Resources:
-  User:
+  MasterUser:
     Type: AWS::IAM::User
     Properties:
       UserName: jenkins-ec2-plugin
@@ -35,11 +35,27 @@ Resources:
                 Effect: Allow
                 Resource: "*"
 
-  AccessKey:
+  MasterAccessKey:
     Type: AWS::IAM::AccessKey
     Properties:
-      UserName: !Ref User
+      UserName: !Ref MasterUser
+
+  SlavesUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: jennkins-build
+
+  SlavesAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref SlavesUser
 
 Outputs:
-  AccessSecret:
-    Value: !GetAtt AccessKey.SecretAccessKey
+  MasterAccessKey:
+    Value: !Ref MasterAccessKey
+  MasterAccessSecret:
+    Value: !GetAtt MasterAccessKey.SecretAccessKey
+  SlavesAccessKey:
+    Value: !Ref SlavesAccessKey
+  SlavesAccessSecret:
+    Value: !GetAtt SlavesAccessKey.SecretAccessKey

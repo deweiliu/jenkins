@@ -8,54 +8,35 @@ Description:
   Provision the required resources for blog post example 'Deploying Jenkins to ECS'.
   Wait for creation to complete before testing.
 Resources:
-  CertificateStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/certificate.yml
-
-  VPCStack:
+  VPC:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/vpc.yml
 
-  ECSStack:
+  ECS:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/ecs.yml
       Parameters:
         JenkinsDockerImage: !Ref JenkinsDockerImage
-        CertificateArn: !GetAtt CertificateStack.Outputs.CertificateARN
         JenkinsFileSystem: !ImportValue JenkinsFileSystem
-        VPC: !GetAtt VPCStack.Outputs.VPC
-        CIDRVPC: !GetAtt VPCStack.Outputs.CIDRVPC
-        MasterSubnet1: !GetAtt VPCStack.Outputs.MasterSubnet1
-        SlavesSubnet1: !GetAtt VPCStack.Outputs.SlavesSubnet1
-        MasterSubnet2: !GetAtt VPCStack.Outputs.MasterSubnet2
-        SlavesSubnet2: !GetAtt VPCStack.Outputs.SlavesSubnet2
+        VPC: !GetAtt VPC.Outputs.VPC
+        MasterSubnet1: !GetAtt VPC.Outputs.MasterSubnet1
+        SlavesSubnet1: !GetAtt VPC.Outputs.SlavesSubnet1
+        MasterSubnet2: !GetAtt VPC.Outputs.MasterSubnet2
+        SlavesSubnet2: !GetAtt VPC.Outputs.SlavesSubnet2
 
-  CNametack:
+  IAM:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/cname.yml
-      Parameters:
-        LoadBalancerDNSName: !GetAtt ECSStack.Outputs.LoadBalancerDNSName
-
-  IAMJenkinsMasterStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/iam-jenkins-master.yml
-
-  IAMJenkinsSlavestack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/iam-jenkins-slaves.yml
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/iam.yml
 
 Outputs:
   Domain:
-    Value: !GetAtt CNametack.Outputs.CName
+    Value: !GetAtt ECS.Outputs.JenkinsCNameRecord
     Export:
       Name: JenkinsDNSName
   JenkinsLogs:
-    Value: !GetAtt ECSStack.Outputs.Logs
+    Value: !GetAtt ECS.Outputs.Logs
     Export:
       Name: JenkinsLogs

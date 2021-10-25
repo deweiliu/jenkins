@@ -2,14 +2,6 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Create ACM
 
 Resources:
-  JenkinsSSL:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: jenkins.dliu.com
-      DomainValidationOptions:
-        - DomainName: jenkins.dliu.com
-          HostedZoneId: !ImportValue DLIUCOMHostedZoneID
-      ValidationMethod: DNS
 
 Outputs:
   CertificateARN:
