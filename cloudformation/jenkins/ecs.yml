@@ -55,7 +55,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 8080
           ToPort: 8080
-          DestinationSecurityGroupId: !Ref JenkinsSecurityGroup
+          DestinationSecurityGroupId: !Ref MasterSecurityGroup
 
   HttpLoadBalancerListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
@@ -97,12 +97,37 @@ Resources:
       TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
           Value: 10
-  JenkinsSecurityGroup:
+  SlavesSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: JenkinsSecurityGroup
-      GroupDescription: Security group for Jenkins
+      GroupName: SlavesSecurityGroup
+      GroupDescription: Security group for Jenkins slaves
       VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - FromPort: 22
+          IpProtocol: tcp
+          SourceSecurityGroupId: !Ref MasterSecurityGroup
+          ToPort: 22
+        - FromPort: 22
+          IpProtocol: tcp
+          CidrIp: 0.0.0.0/0
+          ToPort: 22
+
+  MasterSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: MasterSecurityGroup
+      GroupDescription: Security group for Jenkins master
+      VpcId: !Ref VPC
+
+  MasterSecurityGroupIngress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      FromPort: 0
+      ToPort: 65535 # jnlp port is 50000
+      GroupId: !Ref MasterSecurityGroup
+      SourceSecurityGroupId: !Ref SlavesSecurityGroup
 
   JenkinsLoadBalancerSecurityGroupIngress:
     Type: AWS::EC2::SecurityGroupIngress
@@ -110,7 +135,7 @@ Resources:
       IpProtocol: tcp
       FromPort: 8080
       ToPort: 8080
-      GroupId: !Ref JenkinsSecurityGroup
+      GroupId: !Ref MasterSecurityGroup
       SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
   ECSCluster:
     Type: AWS::ECS::Cluster
@@ -154,8 +179,8 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: !Sub jenkins-task
-      Cpu: 512
-      Memory: 1024
+      Cpu: 2048
+      Memory: 8192
       NetworkMode: awsvpc
       TaskRoleArn: !Ref JenkinsRole
       ExecutionRoleArn: !Ref JenkinsExecutionRole
@@ -167,6 +192,7 @@ Resources:
           Image: !Ref JenkinsDockerImage
           PortMappings:
             - ContainerPort: 8080
+            - ContainerPort: 50000 # JenkinsJNLPPort
           MountPoints:
             - SourceVolume: jenkins-home
               ContainerPath: /var/jenkins_home
@@ -211,11 +237,14 @@ Resources:
             - !Ref MasterSubnet1
             - !Ref MasterSubnet2
           SecurityGroups:
-            - !GetAtt JenkinsSecurityGroup.GroupId
+            - !GetAtt MasterSecurityGroup.GroupId
       LoadBalancers:
         - ContainerName: jenkins
           ContainerPort: 8080
           TargetGroupArn: !Ref JenkinsTargetGroup
+      ServiceRegistries:
+        - RegistryArn: !GetAtt DiscoveryService.Arn
+          Port: 50000        
 
   # EFS
   EFSSecurityGroup:
@@ -227,7 +256,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 2049
           ToPort: 2049
-          SourceSecurityGroupId: !Ref JenkinsSecurityGroup
+          SourceSecurityGroupId: !Ref MasterSecurityGroup
 
   MountTargetResource1:
     Type: AWS::EFS::MountTarget
@@ -266,6 +295,27 @@ Resources:
       TTL: "3600"
       ResourceRecords:
         - !GetAtt LoadBalancer.DNSName
+
+
+
+        ##############
+  PrivateNamespace:
+    Type: AWS::ServiceDiscovery::PrivateDnsNamespace
+    Properties:
+      Name: !Ref AWS::StackName
+      Vpc: !Ref VPC
+  DiscoveryService:
+    Type: AWS::ServiceDiscovery::Service
+    Properties:
+      DnsConfig:
+        RoutingPolicy: MULTIVALUE
+        DnsRecords:
+          - TTL: 60
+            Type: A
+          - TTL: 60
+            Type: SRV
+      Name: jenkins
+      NamespaceId: !Ref PrivateNamespace        
 
 Outputs:
   Logs:
