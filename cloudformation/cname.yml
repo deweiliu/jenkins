@@ -19,5 +19,3 @@ Resources:
 Outputs:
   CName:
     Value: !Ref JenkinsCNameRecord
-    Export:
-      Name: CName

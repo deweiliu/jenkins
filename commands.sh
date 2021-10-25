@@ -1,2 +1,3 @@
 aws s3 cp ./cloudformation/ s3://dewei-jenkins/ --recursive;
-aws cloudformation update-stack --stack-name Jenkins --capabilities CAPABILITY_NAMED_IAM --template-body file://cloudformation/main.yml --tags Key=service,Value=jenkins;
+aws cloudformation update-stack --stack-name JenkinsEFS --template-url https://dewei-jenkins.s3.eu-west-2.amazonaws.com/efs.yml --tags Key=service,Value=jenkins;
+aws cloudformation create-stack --stack-name JenkinsService --capabilities CAPABILITY_NAMED_IAM --template-url https://dewei-jenkins.s3.eu-west-2.amazonaws.com/main.yml --tags Key=service,Value=jenkins;

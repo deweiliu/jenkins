@@ -15,5 +15,3 @@ Outputs:
   CertificateARN:
     Description: The certificate ARN for jenkins.dliu.com
     Value: !Ref JenkinsSSL
-    Export:
-      Name: JENKINSDLIUCOMCertificateARN
