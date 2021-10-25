@@ -191,6 +191,7 @@ Resources:
         - Name: jenkins
           Image: !Ref JenkinsDockerImage
           PortMappings:
+            - ContainerPort: 22
             - ContainerPort: 8080
             - ContainerPort: 50000 # JenkinsJNLPPort
           MountPoints:
