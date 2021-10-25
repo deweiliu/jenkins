@@ -5,8 +5,6 @@ Resources:
     Type: AWS::IAM::User
     Properties:
       UserName: jennkins-build
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AWSCodePipelineCustomActionAccess
 
   AccessKey:
     Type: AWS::IAM::AccessKey

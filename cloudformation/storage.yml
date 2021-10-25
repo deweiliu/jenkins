@@ -1,6 +1,11 @@
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: 2010-09-09
 
 Resources:
+  BuildArtifactS3:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: dliu.com-build-artifacts
+
   FileSystemResource:
     Type: AWS::EFS::FileSystem
     Properties:
@@ -16,3 +21,7 @@ Outputs:
     Value: !Ref FileSystemResource
     Export: 
       Name: JenkinsFileSystem
+  BuildArtifactS3:
+    Value: !Ref BuildArtifactS3
+    Export: 
+      Name: BuildArtifactS3

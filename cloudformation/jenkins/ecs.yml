@@ -27,8 +27,8 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Subnets:
-        - ! Ref LoadBalancerSubnet
-        - ! Ref PublicSubnet2
+        - !Ref LoadBalancerSubnet
+        - !Ref PublicSubnet2
       SecurityGroups:
         - !Ref LoadBalancerSecurityGroup
   LoadBalancerSecurityGroup:
@@ -36,7 +36,7 @@ Resources:
     Properties:
       GroupName: LoadBalancerSecurityGroup
       GroupDescription: Security group for load balancer
-      VpcId: ! Ref VPC
+      VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 443
@@ -88,7 +88,7 @@ Resources:
       Port: 8080
       Protocol: HTTP
       TargetType: ip
-      VpcId: ! Ref VPC
+      VpcId: !Ref VPC
       TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
           Value: 10
@@ -97,7 +97,7 @@ Resources:
     Properties:
       GroupName: JenkinsSecurityGroup
       GroupDescription: Security group for Jenkins
-      VpcId: ! Ref VPC
+      VpcId: !Ref VPC
 
   JenkinsLoadBalancerSecurityGroupIngress:
     Type: AWS::EC2::SecurityGroupIngress
@@ -203,7 +203,7 @@ Resources:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
           Subnets:
-            - ! Ref JenkinsMasterSubnet
+            - !Ref JenkinsMasterSubnet
           SecurityGroups:
             - !GetAtt JenkinsSecurityGroup.GroupId
       LoadBalancers:
@@ -213,7 +213,7 @@ Resources:
   EFSSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      VpcId: ! Ref VPC
+      VpcId: !Ref VPC
       GroupDescription: Enable EFS access via port 2049
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -225,7 +225,7 @@ Resources:
     Type: AWS::EFS::MountTarget
     Properties:
       FileSystemId: !Ref JenkinsFileSystem
-      SubnetId: ! Ref JenkinsMasterSubnet
+      SubnetId: !Ref JenkinsMasterSubnet
       SecurityGroups:
         - !GetAtt EFSSecurityGroup.GroupId
   AccessPointResource:

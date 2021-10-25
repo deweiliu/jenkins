@@ -8,24 +8,20 @@ Description:
   Provision the required resources for blog post example 'Deploying Jenkins to ECS'.
   Wait for creation to complete before testing.
 Resources:
-  ArtifactStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/artiffact-storage.yml
   CertificateStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/certificate.yml
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/certificate.yml
 
   VPCStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/vpc.yml
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/vpc.yml
 
   ECSStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/ecs.yml
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/ecs.yml
       Parameters:
         JenkinsDockerImage: !Ref JenkinsDockerImage
         CertificateArn: !GetAtt CertificateStack.Outputs.CertificateARN
@@ -40,22 +36,19 @@ Resources:
   CNametack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/cname.yml
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/cname.yml
       Parameters:
         LoadBalancerDNSName: !GetAtt ECSStack.Outputs.LoadBalancerDNSName
-  IAMBuildtack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/iam-build.yml
 
-  IAMDeployStack:
+  IAMJenkinsMasterStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/iam-deploy.yml
-  IAMEC2PluginStack:
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/iam-jenkins-master.yml
+
+  IAMJenkinsSlavestack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/iam-ec2-plugin.yml
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/iam-jenkins-slaves.yml
 
 Outputs:
   JenkinsDNS:
