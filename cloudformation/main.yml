@@ -16,13 +16,25 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/certificate.yml
-  ECSStack:
+  ECSStack: # This is EFS stack
     Type: AWS::CloudFormation::Stack
+    Description: EFS Stack (not ECS stack)
     Properties:
-      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/ecs.yml
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/efs-ecs.yml
       Parameters:
         JenkinsDockerImage: !Ref JenkinsDockerImage
         CertificateArn: !GetAtt CertificateStack.Outputs.CertificateARN
+
+  RealECSStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/efs-ecs.yml
+      Parameters:
+        JenkinsDockerImage: !Ref JenkinsDockerImage
+        CertificateArn: !GetAtt CertificateStack.Outputs.CertificateARN
+
+
+
   CNametack:
     Type: AWS::CloudFormation::Stack
     Properties:
