@@ -20,21 +20,7 @@ Resources:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
 
-  PublicSubnet2:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref VPC
-      CidrBlock: 10.0.1.0/24
-      MapPublicIpOnLaunch: true
-      AvailabilityZone: !Select
-        - 1
-        - !GetAZs
-          Ref: "AWS::Region"
-      Tags:
-        - Key: Name
-          Value: !Sub "Public Subnet 2 - ${AWS::StackName}"
-
- # Route table
+  # Route table
   MainRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
@@ -48,48 +34,29 @@ Resources:
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref InternetGateway
 
-  # Load balancer
-  LoadBalancerSubnet:
+  # AZ 1
+  MasterSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      CidrBlock: 10.0.10.0/24
-      MapPublicIpOnLaunch: true
-      AvailabilityZone: !Select
-        - 0
-        - !GetAZs
-          Ref: "AWS::Region"
-  LoadBalancerSubnetAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref LoadBalancerSubnet
-      RouteTableId: !Ref MainRouteTable
-
-  # Jenkins master
-  JenkinsMasterSubnet:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref VPC
-      CidrBlock: 10.0.11.0/24
+      CidrBlock: 10.0.111.0/24
       MapPublicIpOnLaunch: true
       AvailabilityZone: !Select
         - 0
         - !GetAZs
           Ref: "AWS::Region"
 
-
-  JenkinsMasterSubnetRouteTableAssociation:
+  MasterSubnet1RouteAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref MainRouteTable
-      SubnetId: !Ref JenkinsMasterSubnet
+      SubnetId: !Ref MasterSubnet1
 
-  # Jenkins slaves
-  JenkinsSlavesSubnet:
+  SlavesSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      CidrBlock: 10.0.12.0/24
+      CidrBlock: 10.0.112.0/24
       MapPublicIpOnLaunch: true
       AvailabilityZone: !Select
         - 0
@@ -100,18 +67,54 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref MainRouteTable
-      SubnetId: !Ref JenkinsSlavesSubnet
+      SubnetId: !Ref SlavesSubnet1
+
+  # AZ 2
+  MasterSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.121.0/24
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select
+        - 1
+        - !GetAZs
+          Ref: "AWS::Region"
+
+  MasterSubnet2RouteAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref MainRouteTable
+      SubnetId: !Ref MasterSubnet2
+
+  SlavesSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.122.0/24
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select
+        - 1
+        - !GetAZs
+          Ref: "AWS::Region"
+
+  SlavesSubnet2RouteAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref MainRouteTable
+      SubnetId: !Ref SlavesSubnet2
 
 Outputs:
-  CIDRVPC:
-    Value: !GetAtt VPC.CidrBlock
-  LoadBalancerSubnet:
-    Value: !Ref LoadBalancerSubnet
-  PublicSubnet2:
-    Value: !Ref PublicSubnet2
-  JenkinsMasterSubnet:
-    Value: !Ref JenkinsMasterSubnet
-  JenkinsSlavesSubnet:
-    Value: !Ref JenkinsSlavesSubnet
   VPC:
     Value: !Ref VPC
+  CIDRVPC:
+    Value: !GetAtt VPC.CidrBlock
+  MasterSubnet1:
+    Value: !Ref MasterSubnet1
+  SlavesSubnet1:
+    Value: !Ref SlavesSubnet1
+  MasterSubnet2:
+    Value: !Ref MasterSubnet2
+  SlavesSubnet2:
+    Value: !Ref SlavesSubnet2
+

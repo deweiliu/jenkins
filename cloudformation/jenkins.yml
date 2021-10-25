@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: "2010-09-09"
 Parameters:
   JenkinsDockerImage:
     Type: String
-    Default: deweiliu/jenkins:latest
+    Default: jenkins/jenkins:latest
     Description: Docker image used in the ECS task definition. Override the default to use a custom image (mandatory).
 Description:
   Provision the required resources for blog post example 'Deploying Jenkins to ECS'.
@@ -25,13 +25,13 @@ Resources:
       Parameters:
         JenkinsDockerImage: !Ref JenkinsDockerImage
         CertificateArn: !GetAtt CertificateStack.Outputs.CertificateARN
-        CIDRVPC: !GetAtt VPCStack.Outputs.CIDRVPC
-        LoadBalancerSubnet: !GetAtt VPCStack.Outputs.LoadBalancerSubnet
-        PublicSubnet2: !GetAtt VPCStack.Outputs.PublicSubnet2
-        JenkinsMasterSubnet: !GetAtt VPCStack.Outputs.JenkinsMasterSubnet
-        JenkinsSlavesSubnet: !GetAtt VPCStack.Outputs.JenkinsSlavesSubnet
-        VPC: !GetAtt VPCStack.Outputs.VPC
         JenkinsFileSystem: !ImportValue JenkinsFileSystem
+        VPC: !GetAtt VPCStack.Outputs.VPC
+        CIDRVPC: !GetAtt VPCStack.Outputs.CIDRVPC
+        MasterSubnet1: !GetAtt VPCStack.Outputs.MasterSubnet1
+        SlavesSubnet1: !GetAtt VPCStack.Outputs.SlavesSubnet1
+        MasterSubnet2: !GetAtt VPCStack.Outputs.MasterSubnet2
+        SlavesSubnet2: !GetAtt VPCStack.Outputs.SlavesSubnet2
 
   CNametack:
     Type: AWS::CloudFormation::Stack
@@ -51,5 +51,11 @@ Resources:
       TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/iam-jenkins-slaves.yml
 
 Outputs:
-  JenkinsDNS:
+  Domain:
     Value: !GetAtt CNametack.Outputs.CName
+    Export:
+      Name: JenkinsDNSName
+  JenkinsLogs:
+    Value: !GetAtt ECSStack.Outputs.Logs
+    Export:
+      Name: JenkinsLogs

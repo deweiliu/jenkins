@@ -4,19 +4,19 @@ Parameters:
     Type: String
   JenkinsDockerImage:
     Type: String
-  CIDRVPC:
-    Type: String
-  LoadBalancerSubnet:
-    Type: String
-  PublicSubnet2:
-    Type: String
-  JenkinsMasterSubnet:
-    Type: String
-  JenkinsSlavesSubnet:
+  JenkinsFileSystem:
     Type: String
   VPC:
     Type: String
-  JenkinsFileSystem:
+  CIDRVPC:
+    Type: String
+  MasterSubnet1:
+    Type: String
+  SlavesSubnet1:
+    Type: String
+  MasterSubnet2:
+    Type: String
+  SlavesSubnet2:
     Type: String
 
 Description:
@@ -27,8 +27,8 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Subnets:
-        - !Ref LoadBalancerSubnet
-        - !Ref PublicSubnet2
+        - !Ref MasterSubnet1
+        - !Ref MasterSubnet2
       SecurityGroups:
         - !Ref LoadBalancerSecurityGroup
   LoadBalancerSecurityGroup:
@@ -203,13 +203,16 @@ Resources:
         AwsvpcConfiguration:
           AssignPublicIp: ENABLED
           Subnets:
-            - !Ref JenkinsMasterSubnet
+            - !Ref MasterSubnet1
+            - !Ref MasterSubnet2
           SecurityGroups:
             - !GetAtt JenkinsSecurityGroup.GroupId
       LoadBalancers:
         - ContainerName: jenkins
           ContainerPort: 8080
           TargetGroupArn: !Ref JenkinsTargetGroup
+
+  # EFS
   EFSSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -221,13 +224,20 @@ Resources:
           ToPort: 2049
           SourceSecurityGroupId: !Ref JenkinsSecurityGroup
 
-  MountTargetResource:
-    Type: AWS::EFS::MountTarget
-    Properties:
-      FileSystemId: !Ref JenkinsFileSystem
-      SubnetId: !Ref JenkinsMasterSubnet
-      SecurityGroups:
-        - !GetAtt EFSSecurityGroup.GroupId
+  # MountTargetResource1:
+  #   Type: AWS::EFS::MountTarget
+  #   Properties:
+  #     FileSystemId: !Ref JenkinsFileSystem
+  #     SubnetId: !Ref MasterSubnet1
+  #     SecurityGroups:
+  #       - !GetAtt EFSSecurityGroup.GroupId
+  # MountTargetResource2:
+  #   Type: AWS::EFS::MountTarget
+  #   Properties:
+  #     FileSystemId: !Ref JenkinsFileSystem
+  #     SubnetId: !Ref MasterSubnet2
+  #     SecurityGroups:
+  #       - !GetAtt EFSSecurityGroup.GroupId
   AccessPointResource:
     Type: AWS::EFS::AccessPoint
     Properties:
@@ -242,5 +252,7 @@ Resources:
           Permissions: "755"
         Path: "/jenkins-home"
 Outputs:
+  Logs:
+    Value: !Ref CloudwatchLogsGroup
   LoadBalancerDNSName:
     Value: !GetAtt LoadBalancer.DNSName
