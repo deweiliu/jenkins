@@ -1,6 +1,57 @@
 AWSTemplateFormatVersion: 2010-09-09
-# https://plugins.jenkins.io/ec2/
+
+Parameters:
+  JenkinsFileSystem:
+    Type: String
+
 Resources:
+  MasterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: jenkins-master-role
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+      Policies:
+        - PolicyName: AccessFileSystem
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - elasticfilesystem:ClientMount
+                  - elasticfilesystem:ClientWrite
+                Resource: !Sub arn:aws:elasticfilesystem:${AWS::Region}:${AWS::AccountId}:file-system/${JenkinsFileSystem}
+        - PolicyName: JenkinsEC2PluginPolicy
+          PolicyDocument:
+            Statement:
+              Action:
+                - ec2:DescribeSpotInstanceRequests
+                - ec2:CancelSpotInstanceRequests
+                - ec2:GetConsoleOutput
+                - ec2:RequestSpotInstances
+                - ec2:RunInstances
+                - ec2:StartInstances
+                - ec2:StopInstances
+                - ec2:TerminateInstances
+                - ec2:CreateTags
+                - ec2:DeleteTags
+                - ec2:DescribeInstances
+                - ec2:DescribeKeyPairs
+                - ec2:DescribeRegions
+                - ec2:DescribeImages
+                - ec2:DescribeAvailabilityZones
+                - ec2:DescribeSecurityGroups
+                - ec2:DescribeSubnets
+                - iam:ListInstanceProfilesForRole
+                - iam:PassRole
+                - ec2:GetPasswordData
+              Effect: Allow
+              Resource: "*"
+
+  ########
   MasterUser:
     Type: AWS::IAM::User
     Properties:
@@ -59,3 +110,5 @@ Outputs:
     Value: !Ref SlavesAccessKey
   SlavesAccessSecret:
     Value: !GetAtt SlavesAccessKey.SecretAccessKey
+  MasterRole:
+    Value: !Ref MasterRole

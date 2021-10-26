@@ -14,6 +14,8 @@ Parameters:
     Type: String
   SlavesSubnet2:
     Type: String
+  MasterRole:
+    Type: String
 
 Description:
   Provision the required resources for blog post example 'Deploying Jenkins to ECS'.
@@ -108,10 +110,6 @@ Resources:
           IpProtocol: tcp
           SourceSecurityGroupId: !Ref MasterSecurityGroup
           ToPort: 22
-        - FromPort: 22
-          IpProtocol: tcp
-          CidrIp: 0.0.0.0/0
-          ToPort: 22
 
   MasterSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -119,15 +117,6 @@ Resources:
       GroupName: MasterSecurityGroup
       GroupDescription: Security group for Jenkins master
       VpcId: !Ref VPC
-
-  MasterSecurityGroupIngress:
-    Type: AWS::EC2::SecurityGroupIngress
-    Properties:
-      IpProtocol: tcp
-      FromPort: 0
-      ToPort: 65535 # jnlp port is 50000
-      GroupId: !Ref MasterSecurityGroup
-      SourceSecurityGroupId: !Ref SlavesSecurityGroup
 
   JenkinsLoadBalancerSecurityGroupIngress:
     Type: AWS::EC2::SecurityGroupIngress
@@ -154,27 +143,27 @@ Resources:
               Service: ecs-tasks.amazonaws.com
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
-  JenkinsRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: jenkins-role
-      Path: /
-      AssumeRolePolicyDocument:
-        Statement:
-          - Action: sts:AssumeRole
-            Effect: Allow
-            Principal:
-              Service: ecs-tasks.amazonaws.com
-      Policies:
-        - PolicyName: root
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - elasticfilesystem:ClientMount
-                  - elasticfilesystem:ClientWrite
-                Resource: !Sub arn:aws:elasticfilesystem:${AWS::Region}:${AWS::AccountId}:file-system/${JenkinsFileSystem}
+  # JenkinsRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     RoleName: jenkins-role
+  #     Path: /
+  #     AssumeRolePolicyDocument:
+  #       Statement:
+  #         - Action: sts:AssumeRole
+  #           Effect: Allow
+  #           Principal:
+  #             Service: ecs-tasks.amazonaws.com
+  #     Policies:
+  #       - PolicyName: root
+  #         PolicyDocument:
+  #           Version: "2012-10-17"
+  #           Statement:
+  #             - Effect: Allow
+  #               Action:
+  #                 - elasticfilesystem:ClientMount
+  #                 - elasticfilesystem:ClientWrite
+  #               Resource: !Sub arn:aws:elasticfilesystem:${AWS::Region}:${AWS::AccountId}:file-system/${JenkinsFileSystem}
   JenkinsTaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -182,7 +171,7 @@ Resources:
       Cpu: 2048
       Memory: 8192
       NetworkMode: awsvpc
-      TaskRoleArn: !Ref JenkinsRole
+      TaskRoleArn: !Ref MasterRole
       ExecutionRoleArn: !Ref JenkinsExecutionRole
       RequiresCompatibilities:
         - FARGATE
@@ -193,7 +182,6 @@ Resources:
           PortMappings:
             - ContainerPort: 22
             - ContainerPort: 8080
-            - ContainerPort: 50000 # JenkinsJNLPPort
           MountPoints:
             - SourceVolume: jenkins-home
               ContainerPath: /var/jenkins_home
@@ -243,9 +231,7 @@ Resources:
         - ContainerName: jenkins
           ContainerPort: 8080
           TargetGroupArn: !Ref JenkinsTargetGroup
-      ServiceRegistries:
-        - RegistryArn: !GetAtt DiscoveryService.Arn
-          Port: 50000        
+    
 
   # EFS
   EFSSecurityGroup:
@@ -299,24 +285,6 @@ Resources:
 
 
 
-        ##############
-  PrivateNamespace:
-    Type: AWS::ServiceDiscovery::PrivateDnsNamespace
-    Properties:
-      Name: !Ref AWS::StackName
-      Vpc: !Ref VPC
-  DiscoveryService:
-    Type: AWS::ServiceDiscovery::Service
-    Properties:
-      DnsConfig:
-        RoutingPolicy: MULTIVALUE
-        DnsRecords:
-          - TTL: 60
-            Type: A
-          - TTL: 60
-            Type: SRV
-      Name: jenkins
-      NamespaceId: !Ref PrivateNamespace        
 
 Outputs:
   Logs:
