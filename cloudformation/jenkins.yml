@@ -26,7 +26,8 @@ Resources:
       TemplateURL: https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins/ecs.yml
       Parameters:
         JenkinsDockerImage: !Ref JenkinsDockerImage
-        MasterRole: !GetAtt  IAM.Outputs.MasterRole
+        MasterRole: !GetAtt IAM.Outputs.MasterRole
+        ECSExecutionRole: !GetAtt IAM.Outputs.ECSExecutionRole
         JenkinsFileSystem: !ImportValue JenkinsFileSystem
         VPC: !GetAtt VPC.Outputs.VPC
         MasterSubnet1: !GetAtt VPC.Outputs.MasterSubnet1

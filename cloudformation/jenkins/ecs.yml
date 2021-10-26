@@ -16,6 +16,8 @@ Parameters:
     Type: String
   MasterRole:
     Type: String
+  ECSExecutionRole:
+    Type: String
 
 Description:
   Provision the required resources for blog post example 'Deploying Jenkins to ECS'.
@@ -130,40 +132,7 @@ Resources:
     Type: AWS::ECS::Cluster
     Properties:
       ClusterName: default-cluster
-  JenkinsExecutionRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: jenkins-execution-role
-      Path: /
-      AssumeRolePolicyDocument:
-        Statement:
-          - Action: sts:AssumeRole
-            Effect: Allow
-            Principal:
-              Service: ecs-tasks.amazonaws.com
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
-  # JenkinsRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     RoleName: jenkins-role
-  #     Path: /
-  #     AssumeRolePolicyDocument:
-  #       Statement:
-  #         - Action: sts:AssumeRole
-  #           Effect: Allow
-  #           Principal:
-  #             Service: ecs-tasks.amazonaws.com
-  #     Policies:
-  #       - PolicyName: root
-  #         PolicyDocument:
-  #           Version: "2012-10-17"
-  #           Statement:
-  #             - Effect: Allow
-  #               Action:
-  #                 - elasticfilesystem:ClientMount
-  #                 - elasticfilesystem:ClientWrite
-  #               Resource: !Sub arn:aws:elasticfilesystem:${AWS::Region}:${AWS::AccountId}:file-system/${JenkinsFileSystem}
+
   JenkinsTaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -172,7 +141,7 @@ Resources:
       Memory: 8192
       NetworkMode: awsvpc
       TaskRoleArn: !Ref MasterRole
-      ExecutionRoleArn: !Ref JenkinsExecutionRole
+      ExecutionRoleArn: !Ref ECSExecutionRole
       RequiresCompatibilities:
         - FARGATE
         - EC2
@@ -231,7 +200,6 @@ Resources:
         - ContainerName: jenkins
           ContainerPort: 8080
           TargetGroupArn: !Ref JenkinsTargetGroup
-    
 
   # EFS
   EFSSecurityGroup:
@@ -282,9 +250,6 @@ Resources:
       TTL: "3600"
       ResourceRecords:
         - !GetAtt LoadBalancer.DNSName
-
-
-
 
 Outputs:
   Logs:
