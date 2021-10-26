@@ -11,7 +11,7 @@ pipeline {
 
         stage('Deploy Jenkins EFS'){
             steps{
-
+                echo 'test'
             }
         }
     }
