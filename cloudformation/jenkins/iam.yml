@@ -76,6 +76,9 @@ Resources:
               Service: ec2.amazonaws.com
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+        - arn:aws:iam::aws:policy/AmazonECS_FullAccess
+        - arn:aws:iam::aws:policy/AmazonVPCFullAccess
   BuilderSlaveInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
