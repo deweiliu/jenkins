@@ -4,7 +4,7 @@ Resources:
   BuildArtifactS3:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: dliu.com-build-artifacts
+      BucketName: dewei-artifacts
 
   FileSystemResource:
     Type: AWS::EFS::FileSystem
@@ -19,9 +19,9 @@ Resources:
 Outputs:
   FileSystemResource:
     Value: !Ref FileSystemResource
-    Export: 
+    Export:
       Name: JenkinsFileSystem
   BuildArtifactS3:
     Value: !Ref BuildArtifactS3
-    Export: 
+    Export:
       Name: BuildArtifactS3
