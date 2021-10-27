@@ -76,6 +76,25 @@ Resources:
               Service: ec2.amazonaws.com
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
+  BuilderSlaveInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: jenkins-builder-slave
+      Roles:
+        - !Ref BuilderSlaveRole
+
+  DeployerSlaveRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: jenkins-deployer-slave-role
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
         - arn:aws:iam::aws:policy/AmazonECS_FullAccess
         - arn:aws:iam::aws:policy/AmazonVPCFullAccess
@@ -83,12 +102,12 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonEC2FullAccess
         - arn:aws:iam::aws:policy/AWSCertificateManagerFullAccess
         - arn:aws:iam::aws:policy/AmazonRoute53FullAccess
-  BuilderSlaveInstanceProfile:
+  DeployerSlaveInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
-      InstanceProfileName: jenkins-builder-slave
+      InstanceProfileName: jenkins-deployer-slave
       Roles:
-        - !Ref BuilderSlaveRole
+        - !Ref DeployerSlaveRole
 
 Outputs:
   ECSExecutionRole:
@@ -97,3 +116,5 @@ Outputs:
     Value: !GetAtt MasterRole.Arn
   BuilderSlaveInstanceProfile:
     Value: !GetAtt BuilderSlaveInstanceProfile.Arn
+  DeployerSlaveInstanceProfile:
+    Value: !GetAtt DeployerSlaveInstanceProfile.Arn
