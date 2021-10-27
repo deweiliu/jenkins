@@ -1,5 +1,5 @@
-def bucket = 'dewei-artifacts/'
-def bucketPath = 'jenkins/'
+def bucket = 'dewei-artifacts'
+def bucketPath = 'jenkins'
 def pathUrl = "https://${bucket}.s3.eu-west-2.amazonaws.com/${bucketPath}"
 
 pipeline {
