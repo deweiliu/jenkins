@@ -23,7 +23,13 @@ pipeline {
                 }
             }
         }
-        post {
+        stage('Deploy Jenkins Service') {
+            steps {
+                    sh """
+                        aws cloudformation update-stack --region eu-west-2 --stack-name Jenkins --template-url ${pathUrl}/jenkins.yml --tags Key=service,Value=jenkins;"
+                        aws cloudformation wait stack-update-complete --stack-name Jenkins
+                    """
+            }
         }
     }
 }
