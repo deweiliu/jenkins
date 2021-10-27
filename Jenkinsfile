@@ -15,7 +15,8 @@ pipeline {
 
         stage('Deploy Jenkins EFS') {
             steps {
-                cfnUpdate(stack:'JenkinsEFS', template:"${pathUrl}/storage.yml")
+                sh "aws cloudformation update-stack --stack-name JenkinsEFS --template-body file://cloudformation/storage.yml --tags Key=service,Value=jenkins;"
+                // cfnUpdate(stack:'JenkinsEFS', template:"${pathUrl}/storage.yml")
             }
         }
     }
