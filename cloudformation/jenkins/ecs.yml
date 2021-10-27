@@ -98,6 +98,7 @@ Resources:
       Protocol: HTTP
       TargetType: ip
       VpcId: !Ref VPC
+      UnhealthyThresholdCount: 3
       TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
           Value: 10
@@ -137,8 +138,8 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: !Sub jenkins-task
-      Cpu: 256
-      Memory: 512
+      Cpu: 512
+      Memory: 2048
       NetworkMode: awsvpc
       TaskRoleArn: !Ref MasterRole
       ExecutionRoleArn: !Ref ECSExecutionRole
