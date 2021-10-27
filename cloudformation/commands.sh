@@ -1,3 +1,0 @@
-aws s3 cp ./ s3://dewei-jenkins/ --recursive;
-aws cloudformation update-stack --stack-name JenkinsEFS --template-url https://dewei-jenkins.s3.eu-west-2.amazonaws.com/storage.yml --tags Key=service,Value=jenkins;
-aws cloudformation update-stack --stack-name Jenkins --capabilities CAPABILITY_NAMED_IAM --template-url https://dewei-jenkins.s3.eu-west-2.amazonaws.com/jenkins.yml --tags Key=service,Value=jenkins;
