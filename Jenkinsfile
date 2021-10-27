@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Upload CloudFormation Templates') {
             steps {
-                s3Upload(bucket:bucket, path:bucketPath, file:'cloudformation/')
+                sh "aws s3 cp ./cloudformation s3://dewei-artifacts/ --recursive;"
             }
         }
 
