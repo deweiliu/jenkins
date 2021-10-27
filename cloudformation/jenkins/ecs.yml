@@ -137,8 +137,8 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: !Sub jenkins-task
-      Cpu: 2048
-      Memory: 8192
+      Cpu: 256
+      Memory: 512
       NetworkMode: awsvpc
       TaskRoleArn: !Ref MasterRole
       ExecutionRoleArn: !Ref ECSExecutionRole
@@ -149,7 +149,6 @@ Resources:
         - Name: jenkins
           Image: !Ref JenkinsDockerImage
           PortMappings:
-            - ContainerPort: 22
             - ContainerPort: 8080
           MountPoints:
             - SourceVolume: jenkins-home
