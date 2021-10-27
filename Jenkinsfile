@@ -6,6 +6,11 @@ pipeline {
     agent {
         label 'deployer-slave-amazon-linux'
     }
+    
+    options {
+        timeout(time: 90, unit: 'MINUTES')
+    }
+
     stages {
         stage('Upload CloudFormation Templates') {
             steps {
