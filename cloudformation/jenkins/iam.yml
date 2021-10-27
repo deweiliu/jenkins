@@ -61,6 +61,7 @@ Resources:
                 - iam:ListInstanceProfilesForRole
                 - iam:PassRole
                 - ec2:GetPasswordData
+                - cloudformation:DescribeStacks
               Effect: Allow
               Resource: "*"
 
@@ -74,13 +75,13 @@ Resources:
             Effect: Allow
             Principal:
               Service: ec2.amazonaws.com
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AmazonS3FullAccess
-        - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
-        - arn:aws:iam::aws:policy/AmazonECS_FullAccess
-        - arn:aws:iam::aws:policy/AmazonVPCFullAccess
-        - arn:aws:iam::aws:policy/IAMFullAccess
-        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+      # ManagedPolicyArns:
+      #   - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      #   - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+      #   - arn:aws:iam::aws:policy/AmazonECS_FullAccess
+      #   - arn:aws:iam::aws:policy/AmazonVPCFullAccess
+      #   - arn:aws:iam::aws:policy/IAMFullAccess
+      #   - arn:aws:iam::aws:policy/AmazonEC2FullAccess
   BuilderSlaveInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
