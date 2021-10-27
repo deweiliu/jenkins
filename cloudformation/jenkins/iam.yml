@@ -81,6 +81,7 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonVPCFullAccess
         - arn:aws:iam::aws:policy/IAMFullAccess
         - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+        - arn:aws:iam::aws:policy/AWSCertificateManagerFullAccess
   BuilderSlaveInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
