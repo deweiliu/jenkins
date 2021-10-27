@@ -45,6 +45,8 @@ Resources:
         - 0
         - !GetAZs
           Ref: "AWS::Region"
+      Tags:
+        - Name: jenkins-master-subnet1
 
   MasterSubnet1RouteAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -62,6 +64,8 @@ Resources:
         - 0
         - !GetAZs
           Ref: "AWS::Region"
+      Tags:
+        - Name: jenkins-slave-subnet1
 
   JenkinsSlavesSubnetRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -80,6 +84,8 @@ Resources:
         - 1
         - !GetAZs
           Ref: "AWS::Region"
+      Tags:
+        - Name: jenkins-master-subnet2
 
   MasterSubnet2RouteAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -97,6 +103,8 @@ Resources:
         - 1
         - !GetAZs
           Ref: "AWS::Region"
+      Tags:
+        - Name: jenkins-slave-subnet2
 
   SlavesSubnet2RouteAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
