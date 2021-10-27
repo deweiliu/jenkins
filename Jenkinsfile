@@ -15,14 +15,15 @@ pipeline {
 
         stage('Deploy Jenkins EFS') {
             steps {
-                try{
+                catchError(buildResult:'SUCCESS', stageResult:'SUCCESS') {
                     sh """
-                    aws cloudformation update-stack --region eu-west-2 --stack-name JenkinsEFS --template-url ${pathUrl}/storage.yml --tags Key=service,Value=jenkins;"
-                    aws cloudformation wait stack-update-complete --stack-name JenkinsEFS
+                        aws cloudformation update-stack --region eu-west-2 --stack-name JenkinsEFS --template-url ${pathUrl}/storage.yml --tags Key=service,Value=jenkins;"
+                        aws cloudformation wait stack-update-complete --stack-name JenkinsEFS
                     """
-                }catch(Exception e){}
-                // cfnUpdate(stack:'Jenkins', url:"https://dewei-artifacts.s3.eu-west-2.amazonaws.com/jenkins/jenkins.yml")
+                }
             }
+        }
+        post {
         }
     }
 }
