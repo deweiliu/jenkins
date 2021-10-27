@@ -61,7 +61,6 @@ Resources:
                 - iam:ListInstanceProfilesForRole
                 - iam:PassRole
                 - ec2:GetPasswordData
-                - cloudformation:DescribeStacks
               Effect: Allow
               Resource: "*"
 
