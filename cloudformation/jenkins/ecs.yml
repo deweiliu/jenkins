@@ -97,6 +97,7 @@ Resources:
       Protocol: HTTP
       TargetType: ip
       VpcId: !Ref VPC
+      HealthCheckPath: /login
       UnhealthyThresholdCount: 3
       HealthCheckTimeoutSeconds: 15
       HealthCheckIntervalSeconds: 60
