@@ -92,13 +92,14 @@ Resources:
   JenkinsTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      HealthCheckPath: /login
       Name: JenkinsTargetGroup
       Port: 8080
       Protocol: HTTP
       TargetType: ip
       VpcId: !Ref VPC
       UnhealthyThresholdCount: 3
+      HealthCheckTimeoutSeconds: 15
+      HealthCheckIntervalSeconds: 60
       TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
           Value: 10
@@ -182,9 +183,8 @@ Resources:
       Cluster: !Ref ECSCluster
       TaskDefinition: !Ref JenkinsTaskDefinition
       DesiredCount: 1
-      HealthCheckGracePeriodSeconds: 300
+      HealthCheckGracePeriodSeconds: 600
       LaunchType: FARGATE
-      PlatformVersion: 1.4.0
       DeploymentConfiguration:
         MinimumHealthyPercent: 0
         MaximumPercent: 100
