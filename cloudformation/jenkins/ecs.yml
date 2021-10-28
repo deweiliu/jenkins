@@ -138,7 +138,7 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: !Sub jenkins-task
-      Cpu: 512
+      Cpu: 256
       Memory: 2048
       NetworkMode: awsvpc
       TaskRoleArn: !Ref MasterRole
