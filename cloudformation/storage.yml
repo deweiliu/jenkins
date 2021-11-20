@@ -4,7 +4,7 @@ Resources:
   BuildArtifactS3:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: dewei-artifacts
+      BucketName: dewei-artifacts-copy
 
   FileSystemResource:
     Type: AWS::EFS::FileSystem

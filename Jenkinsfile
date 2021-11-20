@@ -1,4 +1,4 @@
-def bucket = 'dewei-artifacts'
+def bucket = 'dewei-artifacts-copy'
 def bucketPath = 'jenkins'
 def pathUrl = "https://${bucket}.s3.eu-west-2.amazonaws.com/${bucketPath}"
 
@@ -14,7 +14,7 @@ pipeline {
     stages {
         stage('Upload CloudFormation Templates') {
             steps {
-                sh "aws s3 cp ./cloudformation s3://dewei-artifacts/ --recursive;"
+                sh "aws s3 cp ./cloudformation s3://dewei-artifacts-copy/ --recursive;"
             }
         }
 

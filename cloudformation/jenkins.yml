@@ -11,19 +11,19 @@ Resources:
   VPC:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://dewei-artifacts.s3.eu-west-2.amazonaws.com/jenkins/vpc.yml
+      TemplateURL: https://dewei-artifacts-copy.s3.eu-west-2.amazonaws.com/jenkins/vpc.yml
 
   IAM:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://dewei-artifacts.s3.eu-west-2.amazonaws.com/jenkins/iam.yml
+      TemplateURL: https://dewei-artifacts-copy.s3.eu-west-2.amazonaws.com/jenkins/iam.yml
       Parameters:
         JenkinsFileSystem: !ImportValue JenkinsFileSystem
 
   ECS:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://dewei-artifacts.s3.eu-west-2.amazonaws.com/jenkins/ecs.yml
+      TemplateURL: https://dewei-artifacts-copy.s3.eu-west-2.amazonaws.com/jenkins/ecs.yml
       Parameters:
         JenkinsDockerImage: !Ref JenkinsDockerImage
         MasterRole: !GetAtt IAM.Outputs.MasterRole
