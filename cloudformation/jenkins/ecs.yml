@@ -23,63 +23,20 @@ Description:
   Provision the required resources for blog post example 'Deploying Jenkins to ECS'.
   Wait for creation to complete before testing.
 Resources:
-  LoadBalancer:
-    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+  LoadBalancerListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
-      Subnets:
-        - !Ref MasterSubnet1
-        - !Ref MasterSubnet2
-      SecurityGroups:
-        - !Ref LoadBalancerSecurityGroup
-  LoadBalancerSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupName: LoadBalancerSecurityGroup
-      GroupDescription: Security group for load balancer
-      VpcId: !Ref VPC
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-      SecurityGroupEgress:
-        - IpProtocol: tcp
-          FromPort: 8080
-          ToPort: 8080
-          DestinationSecurityGroupId: !Ref MasterSecurityGroup
-
-  HttpLoadBalancerListener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
-    Properties:
-      DefaultActions:
-        - Type: redirect
-          RedirectConfig:
-            Protocol: HTTPS
-            Port: 443
-            StatusCode: HTTP_301
-            Host: "#{host}"
-            Path: "/#{path}"
-            Query: "#{query}"
-      LoadBalancerArn: !Ref LoadBalancer
-      Port: 80
-      Protocol: HTTP
-  HttpsLoadBalancerListener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
-    Properties:
-      Certificates:
-        - CertificateArn: !Ref SSL
-      DefaultActions:
+      Actions:
         - Type: forward
           ForwardConfig:
             TargetGroups:
               - TargetGroupArn: !Ref JenkinsTargetGroup
-      LoadBalancerArn: !Ref LoadBalancer
-      Port: 443
-      Protocol: HTTPS
+      Conditions:
+        - Field: host-header
+          Values:
+            - jenkins.dliu.com
+      ListenerArn: !ImportValue Core-AlbListener
+      Priority: 30
 
   SSL:
     Type: AWS::CertificateManager::Certificate
@@ -89,10 +46,17 @@ Resources:
         - DomainName: jenkins.dliu.com
           HostedZoneId: !ImportValue DLIUCOMHostedZoneID
       ValidationMethod: DNS
+  AddListenerCertificate:
+    Type: AWS::ElasticLoadBalancingV2::ListenerCertificate
+    Properties:
+      Certificates:
+        - CertificateArn: !Ref SSL
+      ListenerArn: !ImportValue Core-AlbListener
 
   JenkinsTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
+      # Name: JenkinsTargetGroup
       Port: 8080
       Protocol: HTTP
       TargetType: ip
@@ -130,7 +94,8 @@ Resources:
       FromPort: 8080
       ToPort: 8080
       GroupId: !Ref MasterSecurityGroup
-      SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
+      SourceSecurityGroupId: !ImportValue Core-AlbSecurityGroup
+
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
@@ -177,9 +142,6 @@ Resources:
       RetentionInDays: 14
   JenkinsService:
     Type: AWS::ECS::Service
-    DependsOn:
-      - HttpLoadBalancerListener
-      - HttpsLoadBalancerListener
     Properties:
       Cluster: !Ref ECSCluster
       TaskDefinition: !Ref JenkinsTaskDefinition
@@ -250,7 +212,7 @@ Resources:
       Type: CNAME
       TTL: "3600"
       ResourceRecords:
-        - !GetAtt LoadBalancer.DNSName
+        - !ImportValue Core-AlbDns
 
 Outputs:
   Logs:
