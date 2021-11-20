@@ -1,25 +1,11 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Resources:
+Parameters:
   VPC:
-    Type: AWS::EC2::VPC
-    Properties:
-      CidrBlock: 10.0.0.0/16
-      EnableDnsHostnames: true
-      Tags:
-        - Key: Name
-          Value: !Sub "VPC - ${AWS::StackName}"
+    Type: String
   InternetGateway:
-    Type: AWS::EC2::InternetGateway
-    Properties:
-      Tags:
-        - Key: Name
-          Value: !Sub "IGW - ${AWS::StackName}"
-  AttachGateway:
-    Type: AWS::EC2::VPCGatewayAttachment
-    Properties:
-      VpcId: !Ref VPC
-      InternetGatewayId: !Ref InternetGateway
+    Type: String
 
+Resources:
   # Route table
   MainRouteTable:
     Type: AWS::EC2::RouteTable
@@ -28,7 +14,6 @@ Resources:
 
   PublicRouteTableEntry:
     Type: AWS::EC2::Route
-    DependsOn: AttachGateway
     Properties:
       RouteTableId: !Ref MainRouteTable
       DestinationCidrBlock: 0.0.0.0/0
@@ -39,7 +24,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      CidrBlock: 10.0.111.0/24
+      CidrBlock: 10.0.3.0/28
       MapPublicIpOnLaunch: true
       AvailabilityZone: !Select
         - 0
@@ -59,7 +44,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      CidrBlock: 10.0.112.0/24
+      CidrBlock: 10.0.3.32/28
       MapPublicIpOnLaunch: true
       AvailabilityZone: !Select
         - 0
@@ -80,7 +65,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      CidrBlock: 10.0.121.0/24
+      CidrBlock: 10.0.3.16/28
       MapPublicIpOnLaunch: true
       AvailabilityZone: !Select
         - 1
@@ -100,7 +85,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      CidrBlock: 10.0.122.0/24
+      CidrBlock: 10.0.3.48/28
       MapPublicIpOnLaunch: true
       AvailabilityZone: !Select
         - 1
@@ -117,8 +102,6 @@ Resources:
       SubnetId: !Ref SlavesSubnet2
 
 Outputs:
-  VPC:
-    Value: !Ref VPC
   MasterSubnet1:
     Value: !Ref MasterSubnet1
   SlavesSubnet1:
@@ -127,4 +110,3 @@ Outputs:
     Value: !Ref MasterSubnet2
   SlavesSubnet2:
     Value: !Ref SlavesSubnet2
-

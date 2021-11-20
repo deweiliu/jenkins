@@ -23,15 +23,6 @@ Description:
   Provision the required resources for blog post example 'Deploying Jenkins to ECS'.
   Wait for creation to complete before testing.
 Resources:
-  SSL:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      DomainName: jenkins.dliu.com
-      DomainValidationOptions:
-        - DomainName: jenkins.dliu.com
-          HostedZoneId: !ImportValue DLIUCOMHostedZoneID
-      ValidationMethod: DNS
-
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -89,10 +80,19 @@ Resources:
       LoadBalancerArn: !Ref LoadBalancer
       Port: 443
       Protocol: HTTPS
+
+  SSL:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: jenkins.dliu.com
+      DomainValidationOptions:
+        - DomainName: jenkins.dliu.com
+          HostedZoneId: !ImportValue DLIUCOMHostedZoneID
+      ValidationMethod: DNS
+
   JenkinsTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: JenkinsTargetGroup
       Port: 8080
       Protocol: HTTP
       TargetType: ip

@@ -6,7 +6,7 @@ Resources:
     Properties:
       BucketName: dewei-artifacts
 
-  FileSystemResource:
+  FileSystem:
     Type: AWS::EFS::FileSystem
     Properties:
       Encrypted: true
@@ -17,10 +17,14 @@ Resources:
           Value: jenkins-home
 
 Outputs:
-  FileSystemResource:
-    Value: !Ref FileSystemResource
+  FileSystemID:
+    Value: !Ref FileSystem
     Export:
-      Name: JenkinsFileSystem
+      Name: Jenkins-EfsId
+  FileSystemArn:
+    Value: !GetAtt FileSystem.Arn
+    Export:
+      Name: Jenkins-EfsArn
   BuildArtifactS3:
     Value: !Ref BuildArtifactS3
     Export:
