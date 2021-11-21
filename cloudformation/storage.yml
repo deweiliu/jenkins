@@ -9,6 +9,7 @@ Resources:
   FileSystem:
     Type: AWS::EFS::FileSystem
     Properties:
+      DeletionPolicy: Retain
       Encrypted: true
       BackupPolicy:
         Status: ENABLED
