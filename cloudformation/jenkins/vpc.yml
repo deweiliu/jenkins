@@ -105,8 +105,10 @@ Outputs:
   MasterSubnet1:
     Value: !Ref MasterSubnet1
   SlavesSubnet1:
+    Description: Use this in the "Subnet IDs for VPC" section in Jenkins "Configure Clouds"
     Value: !Ref SlavesSubnet1
   MasterSubnet2:
     Value: !Ref MasterSubnet2
   SlavesSubnet2:
+    Description: Use this in the "Subnet IDs for VPC" section in Jenkins "Configure Clouds"
     Value: !Ref SlavesSubnet2
