@@ -14,7 +14,7 @@ pipeline {
     stages {
         stage('Upload CloudFormation Templates') {
             steps {
-                sh 'aws s3 cp ./cloudformation s3://${bucket}/${bucketPath} --recursive;'
+                sh "aws s3 cp ./cloudformation s3://${bucket}/${bucketPath} --recursive;"
             }
         }
 
