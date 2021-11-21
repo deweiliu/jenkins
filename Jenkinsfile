@@ -22,8 +22,8 @@ pipeline {
             steps {
                 catchError(buildResult:'SUCCESS', stageResult:'SUCCESS') {
                     sh """
-                        aws cloudformation update-stack --region eu-west-2 --stack-name JenkinsEFS --template-url ${pathUrl}/storage.yml --tags Key=service,Value=jenkins;
-                        aws cloudformation wait stack-update-complete --region eu-west-2 --stack-name JenkinsEFS;
+                        aws cloudformation update-stack --region eu-west-2 --stack-name JenkinsStorage --template-url ${pathUrl}/storage.yml --tags Key=service,Value=jenkins;
+                        aws cloudformation wait stack-update-complete --region eu-west-2 --stack-name JenkinsStorage;
                     """
                 }
             }
