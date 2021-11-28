@@ -10,4 +10,4 @@ aws cloudformation update-stack --stack-name Jenkins --capabilities CAPABILITY_N
 # From now on, all jobs (building artifacts, deploy CDK/CloudFormation resources) can be done on Jenkins
 
 # To delete stack
-aws cloudformation delete-stack --region eu-west-2 --stack-name Jenkins
+# aws cloudformation delete-stack --region eu-west-2 --stack-name Jenkins
