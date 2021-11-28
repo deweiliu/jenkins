@@ -10,6 +10,7 @@ Description:
 Resources:
   VPC:
     Type: AWS::CloudFormation::Stack
+    DependsOn: IAM
     Properties:
       TemplateURL: https://dewei-artifacts.s3.eu-west-2.amazonaws.com/jenkins/vpc.yml
       Parameters:
