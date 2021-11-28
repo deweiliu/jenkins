@@ -1,0 +1,17 @@
+pipeline {
+    agent {
+        label 'deployer-slave-amazon-linux'
+    }
+
+    options {
+        timeout(time: 90, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Destroy Jenkins Service') {
+            steps {
+                sh "aws cloudformation delete-stack --region eu-west-2 --stack-name Jenkins"
+            }
+        }
+    }
+}
