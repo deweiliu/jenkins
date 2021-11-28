@@ -102,6 +102,8 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonEC2FullAccess
         - arn:aws:iam::aws:policy/AWSCertificateManagerFullAccess
         - arn:aws:iam::aws:policy/AmazonRoute53FullAccess
+        - arn:aws:iam::aws:policy/CloudWatchFullAccess
+        - arn:aws:iam::aws:policy/AmazonElasticFileSystemFullAccess
   DeployerSlaveInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
