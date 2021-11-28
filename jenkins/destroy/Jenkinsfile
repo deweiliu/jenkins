@@ -4,7 +4,7 @@ pipeline {
     }
 
     options {
-        timeout(time: 90, unit: 'MINUTES')
+        timeout(time: 30, unit: 'MINUTES')
     }
 
     stages {
@@ -18,10 +18,9 @@ pipeline {
             steps{
                 script{
                     instanceId = sh(script: "curl http://169.254.169.254/latest/meta-data/instance-id", returnStdout: true)
-                    sh "echo xx${instanceId}xx"
+                    sh "aws ec2 terminate-instances --region eu-west-2 --instance-ids ${instanceId}"
                 }
 
-                // sh "aws ec2 terminate-instances --region eu-west-2 --instance-ids $(curl http://169.254.169.254/latest/meta-data/instance-id)"
             }
         }
     }
