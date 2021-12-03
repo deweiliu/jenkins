@@ -99,7 +99,7 @@ Resources:
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
-      ClusterName: default-cluster
+      ClusterName: jenkins-cluster
 
   JenkinsTaskDefinition:
     Type: AWS::ECS::TaskDefinition
