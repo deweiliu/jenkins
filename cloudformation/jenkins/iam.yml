@@ -104,6 +104,7 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonRoute53FullAccess
         - arn:aws:iam::aws:policy/CloudWatchFullAccess
         - arn:aws:iam::aws:policy/AmazonElasticFileSystemFullAccess
+        - arn:aws:iam::aws:policy/AWSLambda_FullAccess
   DeployerSlaveInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
