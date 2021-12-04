@@ -28,6 +28,12 @@ pipeline {
                 }
             }
         }
+
+        stage('Wait for Stack Ready'){
+            steps{
+                sh(script: 'aws cloudformation wait stack-update-complete --region eu-west-2 --stack-name Jenkins', returnStatus: true)
+            }
+        }
         stage('Deploy Jenkins Service') {
             steps {
                     sh """
