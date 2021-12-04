@@ -94,7 +94,7 @@ Resources:
             Principal:
               Service: ec2.amazonaws.com
       ManagedPolicyArns:
-        # - arn:aws:iam::aws:policy/AdministratorAccess
+        - arn:aws:iam::aws:policy/AdministratorAccess
         # # Todo: Cannot exceed 10 policies but need to explicitly define all access
         # - arn:aws:iam::aws:policy/AmazonS3FullAccess
         # - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
@@ -103,10 +103,10 @@ Resources:
         # - arn:aws:iam::aws:policy/IAMFullAccess
         # - arn:aws:iam::aws:policy/AmazonEC2FullAccess
         # - arn:aws:iam::aws:policy/AWSCertificateManagerFullAccess
-        - arn:aws:iam::aws:policy/AmazonRoute53FullAccess
-        - arn:aws:iam::aws:policy/CloudWatchFullAccess
-        - arn:aws:iam::aws:policy/AmazonElasticFileSystemFullAccess
-        - arn:aws:iam::aws:policy/AWSLambda_FullAccess
+        # - arn:aws:iam::aws:policy/AmazonRoute53FullAccess
+        # - arn:aws:iam::aws:policy/CloudWatchFullAccess
+        # - arn:aws:iam::aws:policy/AmazonElasticFileSystemFullAccess
+        # - arn:aws:iam::aws:policy/AWSLambda_FullAccess
   DeployerSlaveInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
