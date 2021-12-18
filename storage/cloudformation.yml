@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  BuildArtifactS3:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: dewei-artifacts
+
+  FileSystem:
+    Type: AWS::EFS::FileSystem
+    Properties:
+      Encrypted: true
+      BackupPolicy:
+        Status: ENABLED
+      FileSystemTags:
+        - Key: Name
+          Value: jenkins-home
+
+  SlaveSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !ImportValue Core-Vpc
+      CidrBlock: 10.0.13.0/28
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select
+        - 0
+        - !GetAZs
+          Ref: "AWS::Region"
+      Tags:
+        - Key: Name
+          Value: jenkins-slave-subnet
+
+  SlaveSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !ImportValue Core-Vpc
+      CidrBlock: 10.0.13.16/28
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select
+        - 1
+        - !GetAZs
+          Ref: "AWS::Region"
+      Tags:
+        - Key: Name
+          Value: jenkins-slave-subnet
+
+Outputs:
+  FileSystemID:
+    Value: !Ref FileSystem
+    Export:
+      Name: Jenkins-EfsId
+  FileSystemArn:
+    Value: !GetAtt FileSystem.Arn
+    Export:
+      Name: Jenkins-EfsArn
+  SlaveSubnets:
+    Value: !Join [",", [!Ref SlaveSubnet1, !Ref SlaveSubnet2]]
+  BuildArtifactS3:
+    Value: !Ref BuildArtifactS3
+    Export:
+      Name: BuildArtifactS3
