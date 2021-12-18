@@ -20,7 +20,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !ImportValue Core-Vpc
-      CidrBlock: 10.0.13.0/28
+      CidrBlock: 10.0.3.0/28
       MapPublicIpOnLaunch: true
       AvailabilityZone: !Select
         - 0
@@ -34,7 +34,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !ImportValue Core-Vpc
-      CidrBlock: 10.0.13.16/28
+      CidrBlock: 10.0.3.16/28
       MapPublicIpOnLaunch: true
       AvailabilityZone: !Select
         - 1

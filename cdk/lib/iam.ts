@@ -8,9 +8,12 @@ export class IamNestedStack extends cdk.Construct {
   public masterRole: iam.Role;
   public builderSlaveRole: iam.Role;
   public deployerSlaveRole: iam.Role;
+  public masterInstanceProfile: iam.CfnInstanceProfile;
+  public builderSlaveInstanceProfile: iam.CfnInstanceProfile;
+  public deployerSlaveInstanceProfile: iam.CfnInstanceProfile;
 
-  constructor(scope: cdk.Construct, get: ImportValues) {
-    super(scope, 'IAM');
+  constructor(scope: cdk.Construct, id: string, get: ImportValues) {
+    super(scope, id);
     const manageSlavesPolicy = new iam.PolicyDocument({
       statements: [
         new iam.PolicyStatement({
@@ -50,24 +53,33 @@ export class IamNestedStack extends cdk.Construct {
         }),
       ]
     });
-    this.masterRole = new iam.Role(this, 'MasterRole', {
+    this.masterRole = new iam.Role(this, id + 'MasterRole', {
       assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
       inlinePolicies: { accessFileSystemPolicy, manageSlavesPolicy },
     });
 
 
-    this.builderSlaveRole = new iam.Role(this, 'BuilderSlaveRole', {
+
+    this.builderSlaveRole = new iam.Role(this, id + 'BuilderSlaveRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
       managedPolicies: [
-        iam.ManagedPolicy.fromManagedPolicyArn(this, 'S3Access', 'arn:aws:iam::aws:policy/AmazonS3FullAccess'),
+        iam.ManagedPolicy.fromManagedPolicyArn(this, id + 'S3Access', 'arn:aws:iam::aws:policy/AmazonS3FullAccess'),
       ]
     });
+    this.builderSlaveInstanceProfile = new iam.CfnInstanceProfile(this, id + 'BuilderSlaveInstanceProfile', {
+      instanceProfileName: 'jenkins-builder-slave',
+      roles: [this.builderSlaveRole.roleName],
+    });
 
-    this.deployerSlaveRole = new iam.Role(this, 'DeployerSlaveRole', {
+    this.deployerSlaveRole = new iam.Role(this, id + 'DeployerSlaveRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
       managedPolicies: [
-        iam.ManagedPolicy.fromManagedPolicyArn(this, 'AdministratorAccess', 'arn:aws:iam::aws:policy/AdministratorAccess'),
+        iam.ManagedPolicy.fromManagedPolicyArn(this, id + 'AdministratorAccess', 'arn:aws:iam::aws:policy/AdministratorAccess'),
       ]
+    });
+    this.deployerSlaveInstanceProfile = new iam.CfnInstanceProfile(this, id + 'DeployerSlaveInstanceProfile', {
+      instanceProfileName: 'jenkins-deployer-slave',
+      roles: [this.deployerSlaveRole.roleName],
     });
 
   }

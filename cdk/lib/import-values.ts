@@ -73,7 +73,6 @@ export class ImportValues extends cdk.Construct implements CdkStackProps {
             loadBalancerDnsName: Fn.importValue('Core-AlbDns'),
         });
 
-
         this.clusterSecurityGroup = ec2.SecurityGroup.fromSecurityGroupId(scope, 'ClusterSecurityGroup', Fn.importValue('Core-ClusterSecurityGroup'));
         this.cluster = ecs.Cluster.fromClusterAttributes(scope, 'Cluster', {
             clusterName: Fn.importValue('Core-ClusterName'),

@@ -9,7 +9,7 @@ export class CdkStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string) {
     super(scope, id, { tags: { service: 'jenkins' } });
 
-    const volumes: any[] = template.Resources.ECSTaskDefinition762BFC1B.Properties.Volumes;
+    const volumes: any[] = template.Resources.EcsEcsTaskDefinition992294BC.Properties.Volumes;
     volumes.forEach(volume => {
       // CDK bug: https://github.com/aws/aws-cdk/issues/15025
       volume.EfsVolumeConfiguration.FilesystemId = volume.EfsVolumeConfiguration.FileSystemId;

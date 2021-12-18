@@ -1,6 +1,7 @@
 
 synth:
 	cd cdk && npm run synth
+	cd cdk-corrected && npm run synth
 deploy: synth
 	cd cdk-corrected && npm run deploy
 install:
