@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  jenkins:
+    image: deweiliu/jenkins:latest
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    container_name: jenkins-container
+    ports:
+      - 80:80
