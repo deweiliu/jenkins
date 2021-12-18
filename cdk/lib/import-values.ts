@@ -31,7 +31,6 @@ export class ImportValues extends cdk.Construct implements CdkStackProps {
     public hostPort: number;
     public fsId: string;
     public fsArn: string;
-    public dbSecurityGroup: string;
 
     constructor(scope: cdk.Construct, props: CdkStackProps) {
         super(scope, 'ImportValues')
