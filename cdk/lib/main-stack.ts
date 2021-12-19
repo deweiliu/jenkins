@@ -4,6 +4,8 @@ import { IamNestedStack } from './iam';
 import { EfsNestedStack } from './efs';
 import { EcsNestedStack } from './ecs';
 import { AlbNestedStack } from './alb';
+import { NetworkingNestedStack } from './networking';
+import { ExportValues } from './export-values';
 
 export interface CdkStackProps extends cdk.StackProps {
   maxAzs: number;
@@ -22,7 +24,7 @@ export class CdkStack extends cdk.Stack {
     const efsResources = new EfsNestedStack(this, 'Efs', get);
     const ecsResources = new EcsNestedStack(this, 'Ecs', iamResources, efsResources, get);
     const albResources = new AlbNestedStack(this, 'Alb', ecsResources, get);
-
-    new cdk.CfnOutput(this, 'DnsName', { value: albResources.cname.domainName });
+    const networkingResources = new NetworkingNestedStack(this, 'Networking', get);
+    new ExportValues(this, 'ExportValues',iamResources, albResources, networkingResources);
   }
 }

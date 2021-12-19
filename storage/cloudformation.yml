@@ -16,7 +16,7 @@ Resources:
         - Key: Name
           Value: jenkins-home
 
-  SlaveSubnet1:
+  SlaveSubnet0:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !ImportValue Core-Vpc
@@ -30,7 +30,7 @@ Resources:
         - Key: Name
           Value: jenkins-slave-subnet
 
-  SlaveSubnet2:
+  SlaveSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !ImportValue Core-Vpc
@@ -53,8 +53,14 @@ Outputs:
     Value: !GetAtt FileSystem.Arn
     Export:
       Name: Jenkins-EfsArn
-  SlaveSubnets:
-    Value: !Join [",", [!Ref SlaveSubnet1, !Ref SlaveSubnet2]]
+  SlaveSubnet1:
+    Value: !Ref SlaveSubnet1
+    Export:
+      Name: Jenkins-SlaveSubnet1
+  SlaveSubnet0:
+    Value: !Ref SlaveSubnet0
+    Export:
+      Name: Jenkins-SlaveSubnet0
   BuildArtifactS3:
     Value: !Ref BuildArtifactS3
     Export:

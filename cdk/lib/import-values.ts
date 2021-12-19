@@ -31,6 +31,7 @@ export class ImportValues extends cdk.Construct implements CdkStackProps {
     public hostPort: number;
     public fsId: string;
     public fsArn: string;
+    public slaveSubnets: ec2.ISubnet[];
 
     constructor(scope: cdk.Construct, props: CdkStackProps) {
         super(scope, 'ImportValues')
@@ -82,6 +83,13 @@ export class ImportValues extends cdk.Construct implements CdkStackProps {
 
         this.fsId = Fn.importValue('Jenkins-EfsId');
         this.fsArn = Fn.importValue('Jenkins-EfsArn');
+
+        this.slaveSubnets = [];
+        [...Array(this.maxAzs).keys()].forEach(azIndex =>
+            this.slaveSubnets.push(
+                ec2.Subnet.fromSubnetId(this, 'SlaveSubnet' + azIndex, Fn.importValue('Jenkins-SlaveSubnet' + azIndex))
+            )
+        );
     }
 
 
