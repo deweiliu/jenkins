@@ -26,7 +26,7 @@ export class AlbNestedStack extends cdk.Construct {
         path: '/login',
         healthyHttpCodes: '200',
         healthyThresholdCount: 2,
-        unhealthyThresholdCount: 5,
+        unhealthyThresholdCount: 10,
       },
     });
 
