@@ -34,7 +34,7 @@ export class EcsNestedStack extends cdk.Construct {
     this.service = new ecs.Ec2Service(this, id + 'Service', {
       cluster: get.cluster,
       taskDefinition,
-      desiredCount: 1,
+      desiredCount: get.instanceCount,
     });
 
   }

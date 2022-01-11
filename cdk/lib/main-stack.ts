@@ -13,6 +13,7 @@ export interface CdkStackProps extends cdk.StackProps {
   domain: string;
   dnsRecord: string;
   appName: string;
+  instanceCount: number;
 }
 export class CdkStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: CdkStackProps) {
