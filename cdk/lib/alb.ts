@@ -1,15 +1,19 @@
-import * as cdk from '@aws-cdk/core';
-import * as elb from '@aws-cdk/aws-elasticloadbalancingv2';
-import * as route53 from '@aws-cdk/aws-route53';
-import * as acm from '@aws-cdk/aws-certificatemanager';
-import * as ec2 from '@aws-cdk/aws-ec2';
+import { Construct } from 'constructs';
+import {
+  aws_ec2 as ec2,
+  aws_route53 as route53,
+  aws_certificatemanager as acm,
+  aws_elasticloadbalancingv2 as elb,
+  Duration,
+} from 'aws-cdk-lib';
+
 import { EcsNestedStack } from './ecs';
 import { ImportValues } from './import-values';
 
-export class AlbNestedStack extends cdk.Construct {
+export class AlbNestedStack extends Construct {
   public cname: route53.CnameRecord;
 
-  constructor(scope: cdk.Construct, id: string, ecsResources: EcsNestedStack, get: ImportValues) {
+  constructor(scope: Construct, id: string, ecsResources: EcsNestedStack, get: ImportValues) {
     super(scope, id);
 
     get.clusterSecurityGroup.connections.allowFrom(get.albSecurityGroup, ec2.Port.tcp(get.hostPort), `Allow traffic from ELB for ${get.appName}`);
@@ -22,7 +26,7 @@ export class AlbNestedStack extends cdk.Construct {
       targets: [ecsResources.service],
       healthCheck: {
         enabled: true,
-        interval: cdk.Duration.minutes(1),
+        interval: Duration.minutes(1),
         path: '/login',
         healthyHttpCodes: '200',
         healthyThresholdCount: 2,
@@ -47,7 +51,7 @@ export class AlbNestedStack extends cdk.Construct {
       zone: get.hostedZone,
       domainName: get.alb.loadBalancerDnsName,
       recordName: get.dnsRecord,
-      ttl: cdk.Duration.hours(1),
+      ttl: Duration.hours(1),
     });
 
   }

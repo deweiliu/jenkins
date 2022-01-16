@@ -1,12 +1,16 @@
-import { ImportValues } from './import-values';
-import * as cdk from '@aws-cdk/core';
-import * as ec2 from '@aws-cdk/aws-ec2';
-import * as efs from '@aws-cdk/aws-efs';
+import { Construct } from 'constructs';
+import {
+    aws_ec2 as ec2,
+    aws_efs as efs,
+    Stack,
+} from 'aws-cdk-lib';
 
-export class EfsNestedStack extends cdk.Construct {
+import { ImportValues } from './import-values';
+
+export class EfsNestedStack extends Construct {
     public accessPoint: efs.AccessPoint;
 
-    constructor(scope: cdk.Construct, id: string, get: ImportValues) {
+    constructor(scope: Construct, id: string, get: ImportValues) {
         super(scope, 'Efs');
         const fsSecurityGroup = new ec2.SecurityGroup(this, id + 'EfsSecurityGroup', { vpc: get.vpc });
         fsSecurityGroup.connections.allowFrom(get.clusterSecurityGroup, ec2.Port.tcp(2049), `Allow traffic from ${get.appName} to the File System`);
@@ -15,7 +19,7 @@ export class EfsNestedStack extends cdk.Construct {
         [...Array(get.maxAzs).keys()].forEach(azIndex => {
             const subnet = new ec2.PublicSubnet(this, id + 'Subnet' + azIndex, {
                 vpcId: get.vpc.vpcId,
-                availabilityZone: cdk.Stack.of(this).availabilityZones[azIndex],
+                availabilityZone: Stack.of(this).availabilityZones[azIndex],
                 cidrBlock: `10.0.${get.appId}.${(azIndex + 2) * 16}/28`,
                 mapPublicIpOnLaunch: true,
             });

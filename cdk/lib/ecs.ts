@@ -1,12 +1,13 @@
-import * as cdk from '@aws-cdk/core';
-import * as ecs from '@aws-cdk/aws-ecs';
+import { Construct } from 'constructs';
+import { aws_ecs as ecs } from 'aws-cdk-lib';
+
 import { EfsNestedStack } from './efs';
 import { IamNestedStack } from './iam';
 import { ImportValues } from './import-values';
 
-export class EcsNestedStack extends cdk.Construct {
+export class EcsNestedStack extends Construct {
   public service: ecs.Ec2Service;
-  constructor(scope: cdk.Construct, id: string, iamResources: IamNestedStack, efsResources: EfsNestedStack, get: ImportValues) {
+  constructor(scope: Construct, id: string, iamResources: IamNestedStack, efsResources: EfsNestedStack, get: ImportValues) {
     super(scope, id);
     const taskDefinition = new ecs.Ec2TaskDefinition(this, id + 'TaskDefinition', {
       taskRole: iamResources.masterRole,

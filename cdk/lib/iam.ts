@@ -1,10 +1,9 @@
-import * as cdk from '@aws-cdk/core';
-import * as iam from '@aws-cdk/aws-iam';
+import { Construct } from 'constructs';
+import { aws_iam as iam } from 'aws-cdk-lib';
+
 import { ImportValues } from './import-values';
 
-
-
-export class IamNestedStack extends cdk.Construct {
+export class IamNestedStack extends Construct {
   public masterRole: iam.Role;
   public builderSlaveRole: iam.Role;
   public deployerSlaveRole: iam.Role;
@@ -12,7 +11,7 @@ export class IamNestedStack extends cdk.Construct {
   public builderSlaveInstanceProfile: iam.CfnInstanceProfile;
   public deployerSlaveInstanceProfile: iam.CfnInstanceProfile;
 
-  constructor(scope: cdk.Construct, id: string, get: ImportValues) {
+  constructor(scope: Construct, id: string, get: ImportValues) {
     super(scope, id);
     const manageSlavesPolicy = new iam.PolicyDocument({
       statements: [

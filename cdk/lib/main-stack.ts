@@ -1,4 +1,6 @@
-import * as cdk from '@aws-cdk/core';
+import { Construct } from 'constructs';
+import { StackProps, Stack } from 'aws-cdk-lib';
+
 import { ImportValues } from './import-values';
 import { IamNestedStack } from './iam';
 import { EfsNestedStack } from './efs';
@@ -7,7 +9,7 @@ import { AlbNestedStack } from './alb';
 import { NetworkingNestedStack } from './networking';
 import { ExportValues } from './export-values';
 
-export interface CdkStackProps extends cdk.StackProps {
+export interface CdkStackProps extends StackProps {
   maxAzs: number;
   appId: number;
   domain: string;
@@ -15,8 +17,8 @@ export interface CdkStackProps extends cdk.StackProps {
   appName: string;
   instanceCount: number;
 }
-export class CdkStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: CdkStackProps) {
+export class CdkStack extends Stack {
+  constructor(scope: Construct, id: string, props: CdkStackProps) {
     super(scope, id, props);
 
     const get = new ImportValues(this, props);

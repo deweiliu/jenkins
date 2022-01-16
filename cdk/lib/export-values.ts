@@ -1,22 +1,22 @@
 
-import * as cdk from '@aws-cdk/core';
+import { Construct } from 'constructs';
+import { CfnOutput } from 'aws-cdk-lib';
+
 import { AlbNestedStack } from './alb';
 import { IamNestedStack } from './iam';
 import { NetworkingNestedStack } from './networking';
 
-export class ExportValues extends cdk.Construct {
+export class ExportValues extends Construct {
 
 
-    constructor(scope: cdk.Construct, id: string,
+    constructor(scope: Construct, id: string,
         iamResources: IamNestedStack, albResources: AlbNestedStack, networkingResources: NetworkingNestedStack
     ) {
         super(scope, id);
-        new cdk.CfnOutput(this, 'DnsName', { value: albResources.cname.domainName });
-        new cdk.CfnOutput(this, 'SlaveSecurityGroup', { value: networkingResources.slaveSecurityGroup.securityGroupId });
-        new cdk.CfnOutput(this, 'SlaveBuilderInstanceProfile', { value: iamResources.builderSlaveInstanceProfile.attrArn });
-        new cdk.CfnOutput(this, 'SlaveDeployerInstanceProfile', { value: iamResources.deployerSlaveInstanceProfile.attrArn });
-
+        new CfnOutput(this, 'DnsName', { value: albResources.cname.domainName });
+        new CfnOutput(this, 'SlaveSecurityGroup', { value: networkingResources.slaveSecurityGroup.securityGroupId });
+        new CfnOutput(this, 'SlaveBuilderInstanceProfile', { value: iamResources.builderSlaveInstanceProfile.attrArn });
+        new CfnOutput(this, 'SlaveDeployerInstanceProfile', { value: iamResources.deployerSlaveInstanceProfile.attrArn });
     }
-
 
 }
