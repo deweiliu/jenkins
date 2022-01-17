@@ -36,6 +36,8 @@ export class EcsNestedStack extends Construct {
       cluster: get.cluster,
       taskDefinition,
       desiredCount: get.instanceCount,
+      minHealthyPercent: get.instanceCount > 1 ? 50 : 0,
+      maxHealthyPercent: 200,
     });
 
   }
