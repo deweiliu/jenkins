@@ -24,7 +24,7 @@ export class EcsNestedStack extends Construct {
     const container = taskDefinition.addContainer('Container', {
       image: ecs.ContainerImage.fromRegistry(get.dockerImage),
       containerName: `${get.appName}-container`,
-      memoryReservationMiB: 800,
+      memoryReservationMiB: 920,
       portMappings: [{ containerPort: 8080, hostPort: get.hostPort, protocol: ecs.Protocol.TCP }],
       logging: new ecs.AwsLogDriver({ streamPrefix: get.appName, logRetention: logs.RetentionDays.ONE_MONTH }),
     });
