@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { aws_ecs as ecs } from 'aws-cdk-lib';
+import { aws_ecs as ecs, aws_logs as logs } from 'aws-cdk-lib';
 
 import { EfsNestedStack } from './efs';
 import { IamNestedStack } from './iam';
@@ -26,7 +26,7 @@ export class EcsNestedStack extends Construct {
       containerName: `${get.appName}-container`,
       memoryReservationMiB: 800,
       portMappings: [{ containerPort: 8080, hostPort: get.hostPort, protocol: ecs.Protocol.TCP }],
-      logging: new ecs.AwsLogDriver({ streamPrefix: get.appName }),
+      logging: new ecs.AwsLogDriver({ streamPrefix: get.appName, logRetention: logs.RetentionDays.ONE_MONTH }),
     });
     container.addMountPoints(
       { containerPath: '/var/jenkins_home', readOnly: false, sourceVolume: 'jenkins-home' },
