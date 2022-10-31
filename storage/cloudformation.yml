@@ -12,6 +12,12 @@ Resources:
         - Key: Name
           Value: jenkins-home
 
+  SlaveKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: jenkins-slave
+      KeyType: rsa
+
   SlaveSubnet0:
     Type: AWS::EC2::Subnet
     Properties:
