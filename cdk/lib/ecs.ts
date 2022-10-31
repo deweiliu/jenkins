@@ -38,6 +38,7 @@ export class EcsNestedStack extends Construct {
       desiredCount: get.instanceCount,
       minHealthyPercent: get.instanceCount > 1 ? 50 : 0,
       maxHealthyPercent: 200,
+      circuitBreaker: { rollback: true },
     });
 
   }

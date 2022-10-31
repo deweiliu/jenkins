@@ -7,7 +7,7 @@ const app = new App();
 new CdkStack(app, 'Jenkins', {
   maxAzs: 2,
   appId: 3,
-  domain: 'dliu.com',
+
   dnsRecord: 'jenkins',
   appName: 'jenkins',
   instanceCount: 1,

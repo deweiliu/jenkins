@@ -12,7 +12,6 @@ import { ExportValues } from './export-values';
 export interface CdkStackProps extends StackProps {
   maxAzs: number;
   appId: number;
-  domain: string;
   dnsRecord: string;
   appName: string;
   instanceCount: number;

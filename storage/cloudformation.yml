@@ -1,10 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Resources:
-  BuildArtifactS3:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: dewei-artifacts
 
   FileSystem:
     Type: AWS::EFS::FileSystem
@@ -61,7 +57,3 @@ Outputs:
     Value: !Ref SlaveSubnet0
     Export:
       Name: Jenkins-SlaveSubnet0
-  BuildArtifactS3:
-    Value: !Ref BuildArtifactS3
-    Export:
-      Name: BuildArtifactS3
