@@ -1,3 +1,5 @@
+# AMI image ID ami-0015a39e4b7c0966f
+
 # Init script upon connection
 #!/bin/sh
 
